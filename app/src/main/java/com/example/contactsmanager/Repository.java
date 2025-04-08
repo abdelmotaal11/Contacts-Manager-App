@@ -1,5 +1,6 @@
 package com.example.contactsmanager;
 
+import android.app.Application;
 import android.os.Looper;
 
 import androidx.lifecycle.LiveData;
@@ -21,8 +22,9 @@ public class Repository {
     android.os.Handler handler;
 
 
-    public Repository(ContactDAO contactDAO) {
-        this.contactDAO = contactDAO;
+    public Repository(Application  application) {
+        ContactDatabase contactDatabase = ContactDatabase.getInstance(application);
+        this.contactDAO = contactDatabase.getContactDAO();
         this.executor = Executors.newSingleThreadExecutor();
         this.handler = new android.os.Handler(Looper.getMainLooper());
     }
