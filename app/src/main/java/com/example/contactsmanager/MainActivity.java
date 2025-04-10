@@ -1,5 +1,6 @@
 package com.example.contactsmanager;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     //data source
     private ContactDatabase contactDatabase;
-    private ArrayList<Contacts> contacts = new ArrayList<>();
+    private ArrayList<Contacts> contactsArrayList = new ArrayList<>();
 
     //adapter
     private MyAdapter myAdapter;
@@ -52,8 +53,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
-        //adapter
-        myAdapter = new MyAdapter(contacts);
+
 
         //dataabse
         contactDatabase = ContactDatabase.getInstance(this);
@@ -62,18 +62,22 @@ public class MainActivity extends AppCompatActivity {
         MyViewModel viewModel = new ViewModelProvider(this).get(MyViewModel.class);
 
         //Inserting new contact for testing
-        Contacts c1 = new Contacts(1,"Mostafa","mostafa6520@gmail.com");
+        Contacts c1 = new Contacts("Mostafa","mostafa6520@gmail.com");
         viewModel.addNewContact(c1);
         //Load from DB
         viewModel.getAllContacts().observe(this, new Observer<List<Contacts>>() {
             @Override
             public void onChanged(List<Contacts> contacts) {
                 for (Contacts c:contacts){
-                    Log.v("TAGY",c.getName());
+                    Log.v("TAGY>>>>>>>>>>",c.getName());
+                    contactsArrayList.add(c);
                 }
+                myAdapter.notifyDataSetChanged();
             }
         });
 
+        //adapter
+        myAdapter = new MyAdapter(contactsArrayList);
 
         recyclerView.setAdapter(myAdapter);
     }
